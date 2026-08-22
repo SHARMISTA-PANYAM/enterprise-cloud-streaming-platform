@@ -1,0 +1,333 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://platform.company.io/schemas/service-request.schema.json",
+  "title": "Enterprise Platform Service Request",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "platform.company.io/v1"
+    },
+
+    "kind": {
+      "type": "string",
+      "const": "ServiceRequest"
+    },
+
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "name",
+        "team",
+        "owner"
+      ],
+
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+
+        "team": {
+          "type": "string",
+          "minLength": 2
+        },
+
+        "owner": {
+          "type": "string",
+          "minLength": 3
+        }
+      }
+    },
+
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "environment",
+        "runtime",
+        "networking",
+        "streaming",
+        "observability",
+        "security"
+      ],
+
+      "properties": {
+        "environment": {
+          "type": "string",
+          "enum": [
+            "dev",
+            "test",
+            "prod"
+          ]
+        },
+
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+
+          "required": [
+            "type",
+            "replicas",
+            "resources"
+          ],
+
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "kubernetes"
+            },
+
+            "replicas": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            },
+
+            "resources": {
+              "type": "object",
+              "additionalProperties": false,
+
+              "required": [
+                "requests",
+                "limits"
+              ],
+
+              "properties": {
+                "requests": {
+                  "$ref": "#/$defs/resources"
+                },
+
+                "limits": {
+                  "$ref": "#/$defs/resources"
+                }
+              }
+            }
+          }
+        },
+
+        "networking": {
+          "type": "object",
+          "additionalProperties": false,
+
+          "required": [
+            "exposure",
+            "port"
+          ],
+
+          "properties": {
+            "exposure": {
+              "type": "string",
+              "enum": [
+                "internal",
+                "public"
+              ]
+            },
+
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          }
+        },
+
+        "streaming": {
+          "type": "object",
+          "additionalProperties": false,
+
+          "required": [
+            "kafka"
+          ],
+
+          "properties": {
+            "kafka": {
+              "type": "object",
+              "additionalProperties": false,
+
+              "required": [
+                "enabled",
+                "topics"
+              ],
+
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+
+                "topics": {
+                  "type": "array",
+                  "uniqueItems": true,
+
+                  "items": {
+                    "$ref": "#/$defs/kafkaTopic"
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "observability": {
+          "type": "object",
+          "additionalProperties": false,
+
+          "required": [
+            "enabled",
+            "slo",
+            "alerts"
+          ],
+
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+
+            "slo": {
+              "type": "object",
+              "additionalProperties": false,
+
+              "required": [
+                "availability",
+                "latencyP95Ms"
+              ],
+
+              "properties": {
+                "availability": {
+                  "type": "number",
+                  "minimum": 90,
+                  "maximum": 100
+                },
+
+                "latencyP95Ms": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+
+            "alerts": {
+              "type": "object",
+              "additionalProperties": false,
+
+              "required": [
+                "consumerLag",
+                "errorRate"
+              ],
+
+              "properties": {
+                "consumerLag": {
+                  "type": "boolean"
+                },
+
+                "errorRate": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+
+        "security": {
+          "type": "object",
+          "additionalProperties": false,
+
+          "required": [
+            "secretsProvider",
+            "encryption",
+            "publicAccess"
+          ],
+
+          "properties": {
+            "secretsProvider": {
+              "type": "string",
+              "const": "aws-secrets-manager"
+            },
+
+            "encryption": {
+              "type": "string",
+              "const": "kms"
+            },
+
+            "publicAccess": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "cpu",
+        "memory"
+      ],
+
+      "properties": {
+        "cpu": {
+          "type": "string",
+          "pattern": "^[0-9]+m?$"
+        },
+
+        "memory": {
+          "type": "string",
+          "pattern": "^[0-9]+(Mi|Gi)$"
+        }
+      }
+    },
+
+    "kafkaTopic": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "name",
+        "partitions",
+        "replicationFactor",
+        "retentionHours"
+      ],
+
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+        },
+
+        "partitions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+
+        "replicationFactor": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+
+        "retentionHours": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8760
+        }
+      }
+    }
+  }
+}

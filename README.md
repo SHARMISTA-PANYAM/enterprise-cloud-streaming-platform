@@ -58,17 +58,21 @@ Platform Automation
     |
     +---- Observability -> Metrics / Logs / Alerts
 
-##Engineering Principles
-Infrastructure as Code
-Automation over manual provisioning
-Reusable platform abstractions
-Least-privilege security
-Git-based change management
-Observable systems
-Reproducible environments
-Failure-aware design
-Documented architecture decisions
-Cost-conscious cloud engineering
+```
+## Engineering Principles
 
-##Status
+- Infrastructure as Code
+- Automation over manual provisioning
+- Reusable platform abstractions
+- Least-privilege security
+- Git-based change management
+- Observable systems
+- Reproducible environments
+- Failure-aware design
+- Documented architecture decisions
+- Cost-conscious cloud engineering
+
+## Status
+
 🚧 Active development
+
