@@ -1,0 +1,57 @@
+apiVersion: platform.company.io/v1
+kind: ServiceRequest
+
+metadata:
+  name: payment-events
+  team: payments
+  owner: payments-platform@company.example
+
+spec:
+  environment: dev
+
+  runtime:
+    type: kubernetes
+    replicas: 2
+
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  networking:
+    exposure: internal
+    port: 8080
+
+  streaming:
+    kafka:
+      enabled: true
+
+      topics:
+        - name: payments.events.v1
+          partitions: 6
+          replicationFactor: 3
+          retentionHours: 168
+
+        - name: payments.failures.v1
+          partitions: 3
+          replicationFactor: 3
+          retentionHours: 336
+
+  observability:
+    enabled: true
+
+    slo:
+      availability: 99.9
+      latencyP95Ms: 500
+
+    alerts:
+      consumerLag: true
+      errorRate: true
+
+  security:
+    secretsProvider: aws-secrets-manager
+    encryption: kms
+    publicAccess: false
