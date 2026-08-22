@@ -1,0 +1,61 @@
+name: Validate Platform Requests
+
+on:
+  pull_request:
+    paths:
+      - "platform/**"
+      - ".github/workflows/validate-platform-requests.yml"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "platform/**"
+      - ".github/workflows/validate-platform-requests.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-service-requests:
+    name: Validate Service Requests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: platform/validator/requirements.txt
+
+      - name: Install validator dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r platform/validator/requirements.txt
+
+      - name: Validate onboarding requests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          shopt -s nullglob
+          files=(
+            platform/onboarding/*.yaml
+            platform/onboarding/*.yml
+          )
+
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "ERROR: No platform onboarding requests were found."
+            exit 1
+          fi
+
+          for file in "${files[@]}"; do
+            echo "Validating ${file}"
+            python platform/validator/validate_service_request.py "${file}"
+          done
