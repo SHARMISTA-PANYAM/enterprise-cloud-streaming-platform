@@ -76,3 +76,40 @@ Platform Automation
 
 🚧 Active development
 
+## Completed Capabilities
+
+### 1. Self-Service Platform Onboarding
+
+Built a Git-driven onboarding workflow that allows application teams to declare platform requirements through a standardized `ServiceRequest` YAML.
+
+- Defined a reusable ServiceRequest contract for runtime, networking, Kafka, observability, and security requirements.
+- Enforced platform standards using JSON Schema validation.
+- Built a Python validation engine using PyYAML and jsonschema.
+- Tested both valid and invalid onboarding requests.
+- Integrated validation into GitHub Actions.
+- Implemented feature branch → Pull Request → CI validation → squash merge workflow.
+
+**Technologies:** YAML, JSON Schema, Python, GitHub Actions, Git
+
+---
+
+### 2. AWS Network Foundation
+
+Designed, deployed, and verified a reusable multi-AZ AWS network foundation using Terraform.
+
+- Created a reusable Terraform network module.
+- Provisioned a `10.20.0.0/16` VPC in `us-east-2`.
+- Distributed infrastructure across `us-east-2a` and `us-east-2b`.
+- Created 2 public and 2 private subnets.
+- Configured an Internet Gateway for public connectivity.
+- Created separate public and private route tables.
+- Routed public traffic through `0.0.0.0/0 → Internet Gateway`.
+- Kept private subnets isolated from direct internet access.
+- Standardized tagging, module inputs, and outputs.
+- Added Terraform formatting and validation checks through GitHub Actions.
+- Used short-lived non-root AWS authentication for infrastructure operations.
+- Verified deployed resources using Terraform state, AWS CLI, and Terraform drift detection.
+- Confirmed `terraform plan` reports no infrastructure drift.
+- Kept NAT Gateway disabled in DEV to avoid unnecessary portfolio infrastructure cost.
+
+**Technologies:** AWS VPC, Terraform, AWS CLI, IAM, GitHub Actions, Git
