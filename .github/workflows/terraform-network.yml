@@ -1,4 +1,4 @@
-name: Validate Terraform Network
+name: Validate Terraform
 
 on:
   pull_request:
@@ -19,8 +19,8 @@ permissions:
   contents: read
 
 jobs:
-  terraform:
-    name: Terraform Validate
+  network:
+    name: Network Validate
     runs-on: ubuntu-latest
 
     steps:
@@ -35,10 +35,31 @@ jobs:
       - name: Terraform Format Check
         run: terraform fmt -check -recursive infrastructure/terraform
 
-      - name: Terraform Init
+      - name: Network Terraform Init
         working-directory: infrastructure/terraform/environments/dev
         run: terraform init -backend=false
 
-      - name: Terraform Validate
+      - name: Network Terraform Validate
         working-directory: infrastructure/terraform/environments/dev
+        run: terraform validate
+
+  state-backend:
+    name: State Backend Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.15.8
+
+      - name: State Backend Terraform Init
+        working-directory: infrastructure/terraform/bootstrap/state-backend
+        run: terraform init -backend=false
+
+      - name: State Backend Terraform Validate
+        working-directory: infrastructure/terraform/bootstrap/state-backend
         run: terraform validate
