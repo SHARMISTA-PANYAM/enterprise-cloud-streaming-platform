@@ -87,3 +87,29 @@ The infrastructure was verified using:
 Final drift check:
 
 `No changes. Your infrastructure matches the configuration.`
+
+## Deployment Evidence
+
+### AWS VPC Resource Map
+
+The AWS VPC resource map confirms the deployed multi-AZ network topology, including public and private subnets, route tables, and the Internet Gateway.
+
+![AWS VPC Resource Map](../images/aws-network-resource-map.png)
+
+### Deployed Subnets
+
+The DEV VPC contains two public and two private subnets distributed across `us-east-2a` and `us-east-2b`.
+
+![AWS VPC Subnets](../images/aws-subnets.png)
+
+### Public Routing
+
+The public route table contains a default route `0.0.0.0/0` through the Internet Gateway.
+
+![AWS Public Route Table](../images/aws-public-route-table.png)
+
+### Private Routing
+
+The private route table contains only the local VPC route and has no direct Internet Gateway route.
+
+![AWS Private Route Table](../images/aws-private-route-table.png)
