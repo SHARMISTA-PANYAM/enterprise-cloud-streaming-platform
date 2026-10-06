@@ -25,8 +25,6 @@ module "network" {
     "10.20.12.0/24"
   ]
 
-  enable_nat_gateway = false
-
   tags = {
     Owner      = "platform-engineering"
     CostCenter = "portfolio"
