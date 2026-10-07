@@ -45,11 +45,41 @@ variable "availability_zones" {
 variable "public_subnet_cidrs" {
   description = "CIDR blocks assigned to public subnets."
   type        = list(string)
+
+  validation {
+    condition = (
+      length(var.public_subnet_cidrs) == length(var.availability_zones)
+    )
+    error_message = "The number of public subnet CIDRs must match the number of availability zones."
+  }
+
+  validation {
+    condition = alltrue([
+      for cidr in var.public_subnet_cidrs :
+      can(cidrnetmask(cidr))
+    ])
+    error_message = "Every public subnet CIDR must be a valid IPv4 CIDR block."
+  }
 }
 
 variable "private_subnet_cidrs" {
   description = "CIDR blocks assigned to private subnets."
   type        = list(string)
+
+  validation {
+    condition = (
+      length(var.private_subnet_cidrs) == length(var.availability_zones)
+    )
+    error_message = "The number of private subnet CIDRs must match the number of availability zones."
+  }
+
+  validation {
+    condition = alltrue([
+      for cidr in var.private_subnet_cidrs :
+      can(cidrnetmask(cidr))
+    ])
+    error_message = "Every private subnet CIDR must be a valid IPv4 CIDR block."
+  }
 }
 
 variable "tags" {
