@@ -52,12 +52,6 @@ variable "private_subnet_cidrs" {
   type        = list(string)
 }
 
-variable "enable_nat_gateway" {
-  description = "Whether the network should provision NAT Gateway infrastructure."
-  type        = bool
-  default     = false
-}
-
 variable "tags" {
   description = "Additional tags applied to network resources."
   type        = map(string)
