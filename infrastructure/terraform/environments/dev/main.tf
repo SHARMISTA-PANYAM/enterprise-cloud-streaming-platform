@@ -30,3 +30,19 @@ module "network" {
     CostCenter = "portfolio"
   }
 }
+
+module "security" {
+  source = "../../modules/security"
+
+  project_name = "enterprise-cloud-streaming-platform"
+  environment  = "dev"
+
+  vpc_id = module.network.vpc_id
+
+  streaming_port = 9092
+
+  tags = {
+    Owner      = "platform-engineering"
+    CostCenter = "portfolio"
+  }
+}
