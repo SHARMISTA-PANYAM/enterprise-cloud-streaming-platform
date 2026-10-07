@@ -46,3 +46,17 @@ module "security" {
     CostCenter = "portfolio"
   }
 }
+
+module "iam" {
+  source = "../../modules/iam"
+
+  project_name = "enterprise-cloud-streaming-platform"
+  environment  = "dev"
+
+  trusted_service_principal = "ec2.amazonaws.com"
+
+  tags = {
+    Owner      = "platform-engineering"
+    CostCenter = "portfolio"
+  }
+}
